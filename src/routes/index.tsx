@@ -1,222 +1,288 @@
 import { createFileRoute } from "@tanstack/react-router";
-import heroMesh from "@/assets/hero-mesh.jpg";
+import { useState, type FormEvent } from "react";
+import aiGraphic from "@/assets/ai-graphic.jpg";
+import profilePlaceholder from "@/assets/profile-placeholder.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Satakshi Dubey — Aspiring AI Engineer & IT Student" },
+      { title: "Satakshi Dubey — B.Tech IT Student | Aspiring AI Engineer" },
       {
         name: "description",
         content:
-          "Portfolio of Satakshi Dubey, second-year B.Tech IT student building skills in programming, AI tools, prompt engineering and creative technology.",
+          "Portfolio of Satakshi Dubey, second-year B.Tech Information Technology student at AITD Kanpur (AKTU), learning Python, AI tools and prompt engineering on the way to becoming an AI Engineer.",
       },
       { property: "og:title", content: "Satakshi Dubey — Aspiring AI Engineer" },
       {
         property: "og:description",
         content:
-          "Second-year B.Tech Information Technology student learning to build with AI, code and design.",
+          "Second-year B.Tech IT student passionate about Artificial Intelligence, AI tools, programming and creative technology.",
       },
     ],
   }),
   component: Portfolio,
 });
 
-const skills = [
+const navItems = [
+  ["Home", "#home"],
+  ["About", "#about"],
+  ["Education", "#education"],
+  ["Skills", "#skills"],
+  ["Goal", "#goal"],
+  ["Projects", "#projects"],
+  ["Contact", "#contact"],
+] as const;
+
+const skillGroups = [
   {
-    title: "Programming",
-    items: ["Python", "C / C++", "Java basics", "HTML & CSS", "SQL fundamentals"],
+    category: "Programming",
+    skills: [
+      { name: "C", status: "Foundation" },
+      { name: "Python", status: "Currently Learning" },
+    ],
   },
   {
-    title: "AI & Tools",
-    items: ["ChatGPT & Gemini", "Prompt engineering", "AI image tools", "No-code builders", "Automation workflows"],
+    category: "Artificial Intelligence",
+    skills: [
+      { name: "AI Tools", status: "Currently Learning" },
+      { name: "AI Prompting / Prompt Engineering", status: "Currently Developing" },
+    ],
   },
   {
-    title: "Creative",
-    items: ["Canva design", "Presentation craft", "Content writing", "Poster & UI mockups", "Storytelling"],
+    category: "Creative Skills",
+    skills: [{ name: "Video Editing", status: "Foundation" }],
   },
-  {
-    title: "Foundations",
-    items: ["Data structures", "DBMS", "Operating systems", "Computer networks", "Problem solving"],
-  },
+] as const;
+
+const goalSteps = ["Learn", "Experiment", "Build", "Grow", "AI Engineer"];
+
+const upcomingProjects = [
+  { title: "AI Project", note: "Exploring how AI models and tools can solve everyday problems." },
+  { title: "Python Project", note: "A first hands-on build once my Python fundamentals are solid." },
+  { title: "Creative / AI Tool Project", note: "Combining video editing and AI tools into something original." },
 ];
 
-const projects = [
-  {
-    tag: "AI",
-    name: "Prompt Playbook",
-    blurb:
-      "A growing library of tested prompts for study, research and content — organised by task, with notes on what changes the output quality.",
-    stack: ["Prompt design", "LLMs", "Documentation"],
-  },
-  {
-    tag: "Python",
-    name: "Student Utility Scripts",
-    blurb:
-      "Small command-line tools for attendance tracking, marks calculation and file organisation, written to practise clean, readable Python.",
-    stack: ["Python", "File I/O", "Logic"],
-  },
-  {
-    tag: "Web",
-    name: "Campus Event Page",
-    blurb:
-      "A responsive event landing page built from scratch to learn layout, typography and accessible markup without a framework.",
-    stack: ["HTML", "CSS", "Responsive"],
-  },
+const exploring = [
+  { title: "AI Tools & Experimentation", note: "Trying out new AI platforms and understanding what they can do." },
+  { title: "Prompting", note: "Learning how to write prompts that produce reliable, useful results." },
+  { title: "Basic Programming", note: "Strengthening logic and problem solving with C." },
+  { title: "Python Development", note: "Learning — syntax, scripts and small programs." },
+  { title: "Video Editing", note: "Creative editing as a complement to my technical skills." },
 ];
 
-const timeline = [
-  {
-    year: "2024",
-    title: "Started B.Tech in Information Technology",
-    text: "Began the engineering journey with a focus on programming fundamentals and mathematics.",
-  },
-  {
-    year: "2025",
-    title: "Fell in love with AI",
-    text: "Started exploring generative AI tools, prompt engineering and how models are actually built and used.",
-  },
-  {
-    year: "2026",
-    title: "Second year — building in public",
-    text: "Practising Python and DSA daily, shipping small projects, and documenting everything I learn.",
-  },
-  {
-    year: "Next",
-    title: "Toward AI Engineering",
-    text: "Machine learning foundations, real datasets, and an internship where I can contribute to production AI work.",
-  },
-];
+function StatusBadge({ status }: { status: string }) {
+  const learning = status !== "Foundation";
+  return (
+    <span
+      className={
+        learning
+          ? "rounded-full border border-primary/50 bg-primary/10 px-2.5 py-1 text-[11px] font-medium tracking-wide text-primary"
+          : "rounded-full border border-border bg-secondary px-2.5 py-1 text-[11px] font-medium tracking-wide text-muted-foreground"
+      }
+    >
+      {status}
+    </span>
+  );
+}
+
+function SectionHeading({ label, title }: { label: string; title: string }) {
+  return (
+    <div className="mb-12">
+      <p className="font-display text-xs tracking-[0.24em] text-primary uppercase">{label}</p>
+      <h2 className="mt-3 text-3xl leading-tight font-semibold sm:text-4xl">{title}</h2>
+    </div>
+  );
+}
 
 function Portfolio() {
+  const [sent, setSent] = useState(false);
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSent(true);
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
-        <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <a href="#top" className="font-display text-sm font-semibold tracking-[0.2em] uppercase">
-            S. Dubey
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-border/70 bg-background/80 backdrop-blur-xl">
+        <nav className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 py-4 sm:flex sm:justify-between">
+          <a href="#home" className="font-display truncate text-sm font-semibold tracking-[0.2em] uppercase">
+            Satakshi <span className="text-primary">Dubey</span>
           </a>
-          <div className="hidden gap-8 text-sm text-muted-foreground md:flex">
-            <a className="transition-colors hover:text-primary" href="#about">About</a>
-            <a className="transition-colors hover:text-primary" href="#skills">Skills</a>
-            <a className="transition-colors hover:text-primary" href="#work">Work</a>
-            <a className="transition-colors hover:text-primary" href="#journey">Journey</a>
-          </div>
+          <ul className="hidden items-center gap-7 text-sm text-muted-foreground lg:flex">
+            {navItems.map(([label, href]) => (
+              <li key={label}>
+                <a href={href} className="transition-colors hover:text-primary">
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul>
           <a
             href="#contact"
-            className="rounded-full border border-primary/50 px-4 py-1.5 text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+            className="shrink-0 rounded-full border border-primary/50 px-4 py-1.5 text-sm font-medium text-primary transition-all hover:bg-primary hover:text-primary-foreground hover:shadow-[var(--shadow-glow)]"
           >
-            Get in touch
+            Contact
           </a>
         </nav>
       </header>
 
-      <main id="top">
+      <main>
         {/* Hero */}
-        <section className="relative overflow-hidden">
-          <div className="pointer-events-none absolute inset-0 grid-lines opacity-60" aria-hidden="true" />
-          <div className="pointer-events-none absolute inset-0 glow-bg" aria-hidden="true" />
-          <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-6 pt-36 pb-24 md:grid-cols-[1.15fr_0.85fr] md:pt-44 md:pb-32">
-            <div>
-              <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs tracking-[0.18em] text-muted-foreground uppercase">
+        <section id="home" className="relative overflow-hidden">
+          <div className="pointer-events-none absolute inset-0 grid-lines opacity-70" aria-hidden="true" />
+          <div className="pointer-events-none absolute inset-0 glow-bg animate-pulse-glow" aria-hidden="true" />
+          <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 pt-32 pb-24 md:grid-cols-[1.1fr_0.9fr] md:pt-40 md:pb-28">
+            <div className="animate-rise">
+              <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs tracking-[0.16em] text-muted-foreground uppercase">
                 <span className="size-1.5 rounded-full bg-primary" />
-                B.Tech IT · Second Year
+                Available to learn & collaborate
               </p>
-              <h1 className="font-display text-5xl leading-[0.95] font-semibold sm:text-6xl lg:text-7xl">
+              <h1 className="font-display text-5xl leading-[0.95] font-bold sm:text-6xl lg:text-7xl">
                 Satakshi
                 <br />
                 <span className="text-gradient">Dubey</span>
               </h1>
-              <p className="mt-7 max-w-xl text-lg leading-relaxed text-muted-foreground">
-                An Information Technology student learning to build with artificial intelligence —
-                writing code, engineering prompts, and turning curiosity into projects that work.
+              <p className="mt-5 text-base font-medium text-muted-foreground sm:text-lg">
+                B.Tech Information Technology Student{" "}
+                <span className="text-primary">| Aspiring AI Engineer</span>
               </p>
-              <div className="mt-10 flex flex-wrap gap-3">
+              <p className="mt-6 max-w-xl leading-relaxed text-muted-foreground">
+                Second-year Information Technology student passionate about{" "}
+                <span className="text-primary">Artificial Intelligence</span>, emerging AI tools,
+                programming, and creative technology. Currently developing my skills in{" "}
+                <span className="text-primary">Python</span>, AI prompting, and modern AI
+                technologies with the goal of becoming an <span className="text-primary">AI Engineer</span>.
+              </p>
+              <div className="mt-9 flex flex-wrap gap-3">
                 <a
-                  href="#work"
-                  className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"
-                  style={{ boxShadow: "var(--shadow-elegant)" }}
+                  href="#skills"
+                  className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow)]"
                 >
-                  See what I'm building
+                  View My Skills
                 </a>
                 <a
                   href="#contact"
-                  className="rounded-full border border-border px-6 py-3 text-sm font-semibold transition-colors hover:border-primary hover:text-primary"
+                  className="rounded-full border border-border px-6 py-3 text-sm font-semibold transition-all hover:-translate-y-0.5 hover:border-primary hover:text-primary"
                 >
-                  Contact
+                  Contact Me
                 </a>
               </div>
-              <dl className="mt-14 grid max-w-lg grid-cols-3 gap-6 border-t border-border pt-8">
-                {[
-                  ["2nd", "Year of B.Tech"],
-                  ["AI", "Career focus"],
-                  ["Daily", "Practice habit"],
-                ].map(([k, v]) => (
-                  <div key={v}>
-                    <dt className="font-display text-2xl font-semibold text-primary">{k}</dt>
-                    <dd className="mt-1 text-xs tracking-wide text-muted-foreground uppercase">{v}</dd>
-                  </div>
-                ))}
-              </dl>
             </div>
-            <div className="relative">
-              <div className="overflow-hidden rounded-2xl border border-border">
-                <img
-                  src={heroMesh}
-                  alt="Abstract glowing neural network mesh representing artificial intelligence"
-                  width={1024}
-                  height={1280}
-                  className="h-full w-full object-cover"
+
+            <div className="animate-fade justify-self-center">
+              <div className="relative">
+                <div
+                  className="absolute -inset-6 rounded-full blur-3xl"
+                  style={{ background: "var(--gradient-glow)" }}
+                  aria-hidden="true"
                 />
+                <div className="relative size-64 overflow-hidden rounded-full border border-primary/40 sm:size-80">
+                  <img
+                    src={profilePlaceholder}
+                    alt="Professional profile photo placeholder for Satakshi Dubey"
+                    width={1024}
+                    height={1024}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
               </div>
+              <p className="mt-4 text-center text-xs text-muted-foreground">
+                Profile photo placeholder — easily replaced later
+              </p>
             </div>
           </div>
         </section>
 
         {/* About */}
         <section id="about" className="border-t border-border">
-          <div className="mx-auto grid max-w-6xl gap-12 px-6 py-24 md:grid-cols-[0.4fr_0.6fr]">
-            <h2 className="font-display text-sm tracking-[0.2em] text-muted-foreground uppercase">About</h2>
-            <div>
-              <p className="text-2xl leading-snug sm:text-3xl">
-                I'm in the middle of the part nobody posts about — the learning.
-              </p>
-              <div className="mt-8 space-y-5 text-muted-foreground">
+          <div className="mx-auto max-w-6xl px-5 py-24">
+            <SectionHeading label="About" title="A student building toward AI engineering." />
+            <div className="grid items-center gap-12 md:grid-cols-2">
+              <div className="space-y-5 text-muted-foreground">
                 <p>
-                  I'm a second-year B.Tech Information Technology student with one clear goal: to
-                  become an AI Engineer. Right now that means getting genuinely good at the
-                  fundamentals — Python, data structures, databases — while staying close to the
-                  tools that are reshaping how software gets built.
+                  I'm a second-year B.Tech{" "}
+                  <span className="text-foreground">Information Technology</span> student at{" "}
+                  <span className="text-foreground">AITD Kanpur</span>, affiliated with Dr. A.P.J.
+                  Abdul Kalam Technical University (AKTU), graduating in{" "}
+                  <span className="text-foreground">2029</span>.
                 </p>
                 <p>
-                  I spend my time writing small programs, testing how far a well-written prompt can
-                  go, and designing things that look as considered as they function. Every project
-                  here is something I built to learn, not to decorate a resume.
+                  My strongest interest is <span className="text-primary">Artificial Intelligence</span>,
+                  and my aspiration is to become an <span className="text-primary">AI Engineer</span>.
+                  Right now I'm learning AI tools and technologies, building on my programming
+                  background in <span className="text-foreground">C</span>, and actively learning{" "}
+                  <span className="text-primary">Python</span>.
                 </p>
-                <p className="text-foreground">
-                  Looking for internships and collaborations where I can contribute, ask good
-                  questions and grow fast.
+                <p>
+                  I'm also interested in <span className="text-foreground">AI prompting</span> and{" "}
+                  <span className="text-foreground">video editing</span> — a mix of technical and
+                  creative work that keeps me curious. My motivation is simple: keep developing
+                  both sides, consistently.
                 </p>
+              </div>
+              <div className="glass-card overflow-hidden p-2">
+                <img
+                  src={aiGraphic}
+                  alt="Glowing blue wireframe sphere representing artificial intelligence networks"
+                  width={1024}
+                  height={1024}
+                  loading="lazy"
+                  className="w-full rounded-xl object-cover"
+                />
               </div>
             </div>
           </div>
         </section>
 
+        {/* Education */}
+        <section id="education" className="border-t border-border bg-card/30">
+          <div className="mx-auto max-w-6xl px-5 py-24">
+            <SectionHeading label="Education" title="Where I'm studying." />
+            <div className="glass-card max-w-3xl p-8">
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="rounded-full border border-primary/50 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                  2nd Year — Currently Studying
+                </span>
+                <span className="text-xs tracking-wide text-muted-foreground uppercase">
+                  Expected Graduation: 2029
+                </span>
+              </div>
+              <h3 className="mt-6 font-display text-2xl font-semibold">
+                B.Tech — Information Technology
+              </h3>
+              <p className="mt-2 text-muted-foreground">AITD Kanpur</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Affiliated with Dr. A.P.J. Abdul Kalam Technical University (AKTU)
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* Skills */}
-        <section id="skills" className="border-t border-border bg-card/40">
-          <div className="mx-auto max-w-6xl px-6 py-24">
-            <h2 className="font-display text-sm tracking-[0.2em] text-muted-foreground uppercase">Skills</h2>
-            <p className="mt-4 max-w-2xl text-2xl leading-snug sm:text-3xl">
-              A toolkit under active construction.
-            </p>
-            <div className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
-              {skills.map((group) => (
-                <div key={group.title} className="bg-card p-7">
-                  <h3 className="font-display text-lg font-semibold text-primary">{group.title}</h3>
-                  <ul className="mt-5 space-y-2.5 text-sm text-muted-foreground">
-                    {group.items.map((item) => (
-                      <li key={item} className="flex items-start gap-2.5">
-                        <span className="mt-2 size-1 shrink-0 rounded-full bg-accent" />
-                        {item}
+        <section id="skills" className="border-t border-border">
+          <div className="mx-auto max-w-6xl px-5 py-24">
+            <SectionHeading label="Skills" title="What I know, and what I'm learning." />
+            <div className="grid gap-6 md:grid-cols-3">
+              {skillGroups.map((group) => (
+                <div key={group.category} className="glass-card p-7">
+                  <h3 className="font-display text-lg font-semibold text-primary">{group.category}</h3>
+                  <ul className="mt-6 space-y-4">
+                    {group.skills.map((skill) => (
+                      <li key={skill.name} className="border-t border-border pt-4 first:border-0 first:pt-0">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <span className="font-medium">{skill.name}</span>
+                          <StatusBadge status={skill.status} />
+                        </div>
+                        <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-secondary">
+                          <div
+                            className={
+                              skill.status === "Foundation"
+                                ? "h-full w-2/3 rounded-full bg-foreground/40"
+                                : "h-full w-1/3 rounded-full bg-primary"
+                            }
+                          />
+                        </div>
                       </li>
                     ))}
                   </ul>
@@ -226,83 +292,176 @@ function Portfolio() {
           </div>
         </section>
 
-        {/* Work */}
-        <section id="work" className="border-t border-border">
-          <div className="mx-auto max-w-6xl px-6 py-24">
-            <h2 className="font-display text-sm tracking-[0.2em] text-muted-foreground uppercase">Work</h2>
-            <p className="mt-4 max-w-2xl text-2xl leading-snug sm:text-3xl">
-              Projects built while learning.
+        {/* Goal */}
+        <section id="goal" className="relative overflow-hidden border-t border-border bg-card/30">
+          <div className="pointer-events-none absolute inset-0 glow-bg" aria-hidden="true" />
+          <div className="relative mx-auto max-w-6xl px-5 py-24">
+            <SectionHeading label="Career Goal" title="My Goal: AI Engineer" />
+            <p className="max-w-3xl leading-relaxed text-muted-foreground">
+              I'm currently exploring AI tools and developing my programming and prompting
+              abilities, one step at a time. I'm not an experienced professional yet — I'm a
+              student who is genuinely curious about how intelligent systems work, and I'm building
+              the foundations now so that I can grow into a career as an{" "}
+              <span className="text-primary">AI Engineer</span>.
             </p>
-            <div className="mt-12 space-y-px overflow-hidden rounded-2xl border border-border bg-border">
-              {projects.map((project) => (
-                <article
-                  key={project.name}
-                  className="group grid gap-6 bg-card p-8 transition-colors hover:bg-secondary md:grid-cols-[auto_1fr_auto] md:items-start"
+            <ol className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+              {goalSteps.map((step, i) => (
+                <li
+                  key={step}
+                  className={
+                    i === goalSteps.length - 1
+                      ? "rounded-xl border border-primary/60 bg-primary/10 p-5 text-center shadow-[var(--shadow-glow)]"
+                      : "glass-card p-5 text-center"
+                  }
                 >
-                  <span className="rounded-full border border-primary/40 px-3 py-1 text-xs font-medium tracking-wide text-primary uppercase justify-self-start">
-                    {project.tag}
-                  </span>
-                  <div>
-                    <h3 className="font-display text-2xl font-semibold">{project.name}</h3>
-                    <p className="mt-3 max-w-2xl text-muted-foreground">{project.blurb}</p>
-                  </div>
-                  <ul className="flex flex-wrap gap-2 md:justify-end">
-                    {project.stack.map((s) => (
-                      <li key={s} className="rounded-md bg-muted px-2.5 py-1 text-xs text-muted-foreground">
-                        {s}
-                      </li>
-                    ))}
-                  </ul>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Journey */}
-        <section id="journey" className="border-t border-border bg-card/40">
-          <div className="mx-auto max-w-6xl px-6 py-24">
-            <h2 className="font-display text-sm tracking-[0.2em] text-muted-foreground uppercase">Journey</h2>
-            <ol className="mt-12 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-              {timeline.map((step) => (
-                <li key={step.year} className="border-t border-primary/40 pt-6">
-                  <p className="font-display text-sm font-semibold tracking-widest text-primary uppercase">
-                    {step.year}
+                  <p className="font-display text-xs tracking-[0.2em] text-muted-foreground uppercase">
+                    Step {i + 1}
                   </p>
-                  <h3 className="mt-3 font-display text-lg font-semibold">{step.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{step.text}</p>
+                  <p
+                    className={
+                      i === goalSteps.length - 1
+                        ? "mt-2 font-display text-lg font-semibold text-primary"
+                        : "mt-2 font-display text-lg font-semibold"
+                    }
+                  >
+                    {step}
+                  </p>
                 </li>
               ))}
             </ol>
           </div>
         </section>
 
+        {/* Projects */}
+        <section id="projects" className="border-t border-border">
+          <div className="mx-auto max-w-6xl px-5 py-24">
+            <SectionHeading label="Projects" title="Projects — Coming Soon" />
+            <p className="max-w-2xl text-muted-foreground">
+              I'm currently learning, experimenting, and preparing to build my first AI-focused
+              projects. This space is reserved for real work — it will fill up as I go.
+            </p>
+            <div className="mt-12 grid gap-6 md:grid-cols-3">
+              {upcomingProjects.map((project) => (
+                <article
+                  key={project.title}
+                  className="rounded-xl border border-dashed border-border p-7 transition-colors hover:border-primary/50"
+                >
+                  <span className="rounded-full bg-secondary px-2.5 py-1 text-[11px] tracking-wide text-muted-foreground uppercase">
+                    Coming Soon
+                  </span>
+                  <h3 className="mt-5 font-display text-xl font-semibold text-muted-foreground">
+                    {project.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{project.note}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Exploring */}
+        <section className="border-t border-border bg-card/30">
+          <div className="mx-auto max-w-6xl px-5 py-24">
+            <SectionHeading label="What I'm Exploring" title="Areas I'm actively developing." />
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {exploring.map((item) => (
+                <div key={item.title} className="glass-card p-6">
+                  <h3 className="font-display text-base font-semibold">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.note}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Contact */}
         <section id="contact" className="relative overflow-hidden border-t border-border">
           <div className="pointer-events-none absolute inset-0 glow-bg" aria-hidden="true" />
-          <div className="relative mx-auto max-w-3xl px-6 py-28 text-center">
-            <h2 className="font-display text-4xl leading-tight font-semibold sm:text-5xl">
-              Let's build something.
-            </h2>
-            <p className="mx-auto mt-5 max-w-xl text-muted-foreground">
-              Open to internships, student collaborations and any conversation about AI, code or
-              design.
-            </p>
-            <a
-              href="mailto:satakshi.dubey@example.com"
-              className="mt-10 inline-block rounded-full bg-primary px-8 py-3.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"
-              style={{ boxShadow: "var(--shadow-elegant)" }}
-            >
-              satakshi.dubey@example.com
-            </a>
+          <div className="relative mx-auto max-w-6xl px-5 py-24">
+            <SectionHeading label="Contact" title="Let's connect." />
+            <div className="grid gap-10 md:grid-cols-2">
+              <div>
+                <p className="max-w-md leading-relaxed text-muted-foreground">
+                  Recruiters, collaborators, fellow learners — I'd be glad to hear from you,
+                  whether it's an opportunity, a project idea, or just a conversation about AI.
+                </p>
+                <dl className="mt-8 space-y-4">
+                  <div className="glass-card p-5">
+                    <dt className="text-xs tracking-[0.16em] text-muted-foreground uppercase">Email</dt>
+                    <dd className="mt-1">
+                      <a href="mailto:dubsatakshi5@gmail.com" className="font-medium hover:text-primary">
+                        dubsatakshi5@gmail.com
+                      </a>
+                    </dd>
+                  </div>
+                  <div className="glass-card p-5">
+                    <dt className="text-xs tracking-[0.16em] text-muted-foreground uppercase">Phone</dt>
+                    <dd className="mt-1">
+                      <a href="tel:8355033053" className="font-medium hover:text-primary">
+                        8355033053
+                      </a>
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+
+              <form onSubmit={handleSubmit} className="glass-card space-y-4 p-7">
+                <div>
+                  <label htmlFor="name" className="text-sm font-medium">
+                    Name
+                  </label>
+                  <input
+                    id="name"
+                    name="name"
+                    required
+                    className="mt-2 w-full rounded-lg border border-input bg-background/60 px-4 py-2.5 text-sm outline-none transition-colors focus:border-primary"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="email" className="text-sm font-medium">
+                    Email
+                  </label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    className="mt-2 w-full rounded-lg border border-input bg-background/60 px-4 py-2.5 text-sm outline-none transition-colors focus:border-primary"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="message" className="text-sm font-medium">
+                    Message
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    rows={4}
+                    required
+                    className="mt-2 w-full resize-none rounded-lg border border-input bg-background/60 px-4 py-2.5 text-sm outline-none transition-colors focus:border-primary"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="w-full rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-all hover:shadow-[var(--shadow-glow)]"
+                >
+                  Send Message
+                </button>
+                {sent && (
+                  <p className="text-center text-sm text-primary">
+                    Thank you — your message has been noted. Please also reach out by email.
+                  </p>
+                )}
+              </form>
+            </div>
           </div>
         </section>
       </main>
 
       <footer className="border-t border-border">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-6 py-8 text-xs text-muted-foreground sm:flex-row">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-5 py-8 text-xs text-muted-foreground sm:flex-row">
           <p>© {new Date().getFullYear()} Satakshi Dubey</p>
-          <p>Built and maintained by hand.</p>
+          <p>B.Tech IT · AITD Kanpur · Aspiring AI Engineer</p>
         </div>
       </footer>
     </div>
