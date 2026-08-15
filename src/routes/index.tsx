@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent, type MouseEvent } from "react";
 import aiGraphic from "@/assets/ai-graphic.jpg";
 import profilePlaceholder from "@/assets/profile-placeholder.jpg";
 import quizCertificate from "@/assets/quiz-certificate.jpg.asset.json";
