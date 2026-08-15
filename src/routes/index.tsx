@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import aiGraphic from "@/assets/ai-graphic.jpg";
 import profilePlaceholder from "@/assets/profile-placeholder.jpg";
+import quizCertificate from "@/assets/quiz-certificate.jpg.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -76,7 +77,7 @@ const achievements = [
     title: "Online Quiz Certificate",
     description:
       "I earned a certificate by participating in an online quiz. Click the link below to view it.",
-    link: "/quiz-certificate.jpg",
+    link: quizCertificate.url,
     linkText: "Click here to view certificate",
   },
   {
