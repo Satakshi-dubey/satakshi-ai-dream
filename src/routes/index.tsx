@@ -530,29 +530,52 @@ function Portfolio() {
             <SectionHeading label="Certificates" title="Certificates & Achievements" />
             <div className="grid gap-6 md:grid-cols-2">
               {achievements.map((item) => (
-                <article key={item.title} className="glass-card p-7">
+                <article
+                  key={item.title}
+                  className="glass-card cursor-pointer p-7 transition-all hover:border-primary/50"
+                  onClick={() => setSelectedCertificate(item)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") setSelectedCertificate(item);
+                  }}
+                  aria-label={`View details for ${item.title}`}
+                >
                   <h3 className="font-display text-xl font-semibold">{item.title}</h3>
                   <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
-                  {item.link && (
-                    <a
-                      href={item.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-5 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
-                    >
-                      {item.linkText}
+                  <div className="mt-5 flex flex-wrap items-center gap-3">
+                    <span className="inline-flex items-center gap-1 text-sm font-medium text-primary">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M15 3h6v6" />
-                        <path d="M10 14 21 3" />
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                        <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7Z" />
                       </svg>
-                    </a>
-                  )}
+                      View details
+                    </span>
+                    {item.link && (
+                      <span
+                        className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-primary"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                          <polyline points="7 10 12 15 17 10" />
+                          <line x1="12" x2="12" y1="15" y2="3" />
+                        </svg>
+                        Download available
+                      </span>
+                    )}
+                  </div>
                 </article>
               ))}
             </div>
           </div>
         </section>
+
+        <CertificateModal
+          isOpen={!!selectedCertificate}
+          onClose={() => setSelectedCertificate(null)}
+          item={selectedCertificate}
+        />
 
         {/* Exploring */}
         <section className="border-t border-border bg-card/30">
