@@ -124,6 +124,149 @@ function SectionHeading({ label, title }: { label: string; title: string }) {
   );
 }
 
+function CertificateModal({
+  isOpen,
+  onClose,
+  item,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  item: (typeof achievements)[number] | null;
+}) {
+  useEffect(() => {
+    if (!isOpen) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener("keydown", handleKey);
+    };
+  }, [isOpen, onClose]);
+
+  const handleBackdropClick = (e: MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) onClose();
+  };
+
+  const handleDownload = async () => {
+    if (!item?.link || !item.downloadName) return;
+    try {
+      const response = await fetch(item.link);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = item.downloadName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      window.open(item.link, "_blank", "noopener,noreferrer");
+    }
+  };
+
+  if (!isOpen || !item) return null;
+
+  const hasCertificate = !!item.link;
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+      onClick={handleBackdropClick}
+      role="dialog"
+      aria-modal="true"
+      aria-label={item.title}
+    >
+      <div className="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-border bg-background p-6 shadow-2xl sm:p-8">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 rounded-full border border-border p-2 text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+          aria-label="Close certificate details"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
+        </button>
+
+        <h3 className="font-display pr-10 text-xl font-semibold sm:text-2xl">{item.title}</h3>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
+
+        {hasCertificate && (
+          <div className="mt-6 overflow-hidden rounded-xl border border-border bg-card/50">
+            <img
+              src={item.link}
+              alt={`${item.title} preview`}
+              className="max-h-[55vh] w-full object-contain"
+            />
+          </div>
+        )}
+
+        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+          {item.fileDetails && (
+            <>
+              <div className="glass-card p-4">
+                <dt className="text-xs tracking-[0.16em] text-muted-foreground uppercase">File name</dt>
+                <dd className="mt-1 text-sm font-medium break-all">{item.fileDetails.name}</dd>
+              </div>
+              <div className="glass-card p-4">
+                <dt className="text-xs tracking-[0.16em] text-muted-foreground uppercase">Size</dt>
+                <dd className="mt-1 text-sm font-medium">{item.fileDetails.size}</dd>
+              </div>
+              <div className="glass-card p-4">
+                <dt className="text-xs tracking-[0.16em] text-muted-foreground uppercase">Type</dt>
+                <dd className="mt-1 text-sm font-medium">{item.fileDetails.type}</dd>
+              </div>
+              <div className="glass-card p-4">
+                <dt className="text-xs tracking-[0.16em] text-muted-foreground uppercase">Uploaded</dt>
+                <dd className="mt-1 text-sm font-medium">{item.fileDetails.date}</dd>
+              </div>
+            </>
+          )}
+          {item.details && (
+            <div className="glass-card p-4 sm:col-span-2">
+              <dt className="text-xs tracking-[0.16em] text-muted-foreground uppercase">Details</dt>
+              <dd className="mt-2 space-y-1">
+                {item.details.map((detail) => (
+                  <p key={detail} className="text-sm font-medium">
+                    {detail}
+                  </p>
+                ))}
+              </dd>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-8 flex flex-wrap gap-3">
+          {hasCertificate && (
+            <button
+              onClick={handleDownload}
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow)]"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" x2="12" y1="15" y2="3" />
+              </svg>
+              Download certificate
+            </button>
+          )}
+          <button
+            onClick={onClose}
+            className="rounded-full border border-border px-5 py-2.5 text-sm font-semibold transition-colors hover:border-primary hover:text-primary"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Portfolio() {
   const [sent, setSent] = useState(false);
 
