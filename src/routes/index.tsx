@@ -72,6 +72,74 @@ const exploring = [
   { title: "Video Editing", note: "Creative editing as a complement to my technical skills." },
 ];
 
+const certificates = [
+  {
+    title: "Adobe University Hackathon 2026",
+    subtitle: "Participant",
+    description: "Participated in the Adobe University Hackathon 2026, collaborating with peers to build innovative solutions and sharpen problem-solving skills under time constraints.",
+    image: certificatePlaceholder,
+    alt: "Adobe University Hackathon 2026 participation certificate placeholder",
+  },
+  {
+    title: "Certificate Placeholder",
+    subtitle: "Coming Soon",
+    description: "More certificates will be added here as I complete courses, workshops, and achievements.",
+    image: certificatePlaceholder,
+    alt: "Certificate placeholder for upcoming achievement",
+  },
+];
+
+function CertificateLightbox({
+  src,
+  alt,
+  onClose,
+}: {
+  src: string;
+  alt: string;
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Certificate preview"
+    >
+      <button
+        onClick={onClose}
+        className="absolute top-5 right-5 rounded-full border border-border bg-background/80 p-2 text-foreground transition-colors hover:border-primary hover:text-primary"
+        aria-label="Close certificate preview"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M18 6 6 18" />
+          <path d="m6 6 12 12" />
+        </svg>
+      </button>
+      <img
+        src={src}
+        alt={alt}
+        width={1024}
+        height={768}
+        className="max-h-[85vh] max-w-full rounded-xl border border-border object-contain shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      />
+    </div>
+  );
+}
+
 function StatusBadge({ status }: { status: string }) {
   const learning = status !== "Foundation";
   return (
