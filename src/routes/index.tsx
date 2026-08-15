@@ -269,6 +269,7 @@ function CertificateModal({
 
 function Portfolio() {
   const [sent, setSent] = useState(false);
+  const [selectedCertificate, setSelectedCertificate] = useState<(typeof achievements)[number] | null>(null);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
