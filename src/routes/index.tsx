@@ -76,14 +76,26 @@ const achievements = [
   {
     title: "Online Quiz Certificate",
     description:
-      "I earned a certificate by participating in an online quiz. Click the link below to view it.",
+      "I earned a certificate by participating in Quiz Starts of QuestUp 2026: India's Biggest AI Quiz, organised by Falcon Sphere.",
     link: quizCertificate.url,
-    linkText: "Click here to view certificate",
+    linkText: "View certificate",
+    downloadName: "Satakshi-Dubey-Quiz-Certificate.jpg",
+    fileDetails: {
+      name: quizCertificate.original_filename,
+      size: `${(quizCertificate.size / 1024).toFixed(1)} KB`,
+      type: quizCertificate.content_type,
+      date: new Date(quizCertificate.created_at).toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }),
+    },
   },
   {
     title: "Adobe University Hackathon 2026",
     description:
       "I am a participant of Adobe University Hackathon 2026. My team name was Vertex.",
+    details: ["Event: Adobe University Hackathon 2026", "Team: Vertex", "Role: Participant"],
   },
 ];
 
