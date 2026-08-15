@@ -1,8 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import aiGraphic from "@/assets/ai-graphic.jpg";
 import profilePlaceholder from "@/assets/profile-placeholder.jpg";
-import certificatePlaceholder from "@/assets/certificate-placeholder.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -72,73 +71,21 @@ const exploring = [
   { title: "Video Editing", note: "Creative editing as a complement to my technical skills." },
 ];
 
-const certificates = [
+const achievements = [
   {
-    title: "Adobe University Hackathon 2026",
-    subtitle: "Participant",
-    description: "Participated in the Adobe University Hackathon 2026, collaborating with peers to build innovative solutions and sharpen problem-solving skills under time constraints.",
-    image: certificatePlaceholder,
-    alt: "Adobe University Hackathon 2026 participation certificate placeholder",
+    title: "Online Quiz Certificate",
+    description:
+      "I earned a certificate by participating in an online quiz. Click the link below to view it.",
+    link: "/quiz-certificate.jpg",
+    linkText: "Click here to view certificate",
   },
   {
-    title: "Certificate Placeholder",
-    subtitle: "Coming Soon",
-    description: "More certificates will be added here as I complete courses, workshops, and achievements.",
-    image: certificatePlaceholder,
-    alt: "Certificate placeholder for upcoming achievement",
+    title: "Adobe University Hackathon 2026",
+    description:
+      "I am a participant of Adobe University Hackathon 2026. My team name was Vertex.",
   },
 ];
 
-function CertificateLightbox({
-  src,
-  alt,
-  onClose,
-}: {
-  src: string;
-  alt: string;
-  onClose: () => void;
-}) {
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [onClose]);
-
-  return (
-    <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label="Certificate preview"
-    >
-      <button
-        onClick={onClose}
-        className="absolute top-5 right-5 rounded-full border border-border bg-background/80 p-2 text-foreground transition-colors hover:border-primary hover:text-primary"
-        aria-label="Close certificate preview"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M18 6 6 18" />
-          <path d="m6 6 12 12" />
-        </svg>
-      </button>
-      <img
-        src={src}
-        alt={alt}
-        width={1024}
-        height={768}
-        className="max-h-[85vh] max-w-full rounded-xl border border-border object-contain shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
-      />
-    </div>
-  );
-}
 
 function StatusBadge({ status }: { status: string }) {
   const learning = status !== "Foundation";
@@ -166,10 +113,6 @@ function SectionHeading({ label, title }: { label: string; title: string }) {
 
 function Portfolio() {
   const [sent, setSent] = useState(false);
-  const [activeCertificate, setActiveCertificate] = useState<{
-    src: string;
-    alt: string;
-  } | null>(null);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -429,37 +372,25 @@ function Portfolio() {
           <div className="mx-auto max-w-6xl px-5 py-24">
             <SectionHeading label="Certificates" title="Certificates & Achievements" />
             <div className="grid gap-6 md:grid-cols-2">
-              {certificates.map((cert) => (
-                <article
-                  key={cert.title}
-                  className="glass-card cursor-pointer overflow-hidden p-0"
-                  onClick={() => setActiveCertificate({ src: cert.image, alt: cert.alt })}
-                >
-                  <div className="aspect-[4/3] overflow-hidden">
-                    <img
-                      src={cert.image}
-                      alt={cert.alt}
-                      width={1024}
-                      height={768}
-                      loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-                    />
-                  </div>
-                  <div className="p-6">
-                    <span className="rounded-full bg-secondary px-2.5 py-1 text-[11px] tracking-wide text-muted-foreground uppercase">
-                      {cert.subtitle}
-                    </span>
-                    <h3 className="mt-4 font-display text-xl font-semibold">{cert.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{cert.description}</p>
-                    <p className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary">
-                      Click to view
+              {achievements.map((item) => (
+                <article key={item.title} className="glass-card p-7">
+                  <h3 className="font-display text-xl font-semibold">{item.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
+                  {item.link && (
+                    <a
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-5 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+                    >
+                      {item.linkText}
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M15 3h6v6" />
                         <path d="M10 14 21 3" />
                         <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                       </svg>
-                    </p>
-                  </div>
+                    </a>
+                  )}
                 </article>
               ))}
             </div>
@@ -564,14 +495,6 @@ function Portfolio() {
           </div>
         </section>
       </main>
-
-      {activeCertificate && (
-        <CertificateLightbox
-          src={activeCertificate.src}
-          alt={activeCertificate.alt}
-          onClose={() => setActiveCertificate(null)}
-        />
-      )}
 
       <footer className="border-t border-border">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-5 py-8 text-xs text-muted-foreground sm:flex-row">
