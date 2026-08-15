@@ -424,6 +424,48 @@ function Portfolio() {
           </div>
         </section>
 
+        {/* Certificates */}
+        <section id="certificates" className="border-t border-border bg-card/30">
+          <div className="mx-auto max-w-6xl px-5 py-24">
+            <SectionHeading label="Certificates" title="Certificates & Achievements" />
+            <div className="grid gap-6 md:grid-cols-2">
+              {certificates.map((cert) => (
+                <article
+                  key={cert.title}
+                  className="glass-card cursor-pointer overflow-hidden p-0"
+                  onClick={() => setActiveCertificate({ src: cert.image, alt: cert.alt })}
+                >
+                  <div className="aspect-[4/3] overflow-hidden">
+                    <img
+                      src={cert.image}
+                      alt={cert.alt}
+                      width={1024}
+                      height={768}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                    />
+                  </div>
+                  <div className="p-6">
+                    <span className="rounded-full bg-secondary px-2.5 py-1 text-[11px] tracking-wide text-muted-foreground uppercase">
+                      {cert.subtitle}
+                    </span>
+                    <h3 className="mt-4 font-display text-xl font-semibold">{cert.title}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{cert.description}</p>
+                    <p className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary">
+                      Click to view
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M15 3h6v6" />
+                        <path d="M10 14 21 3" />
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                      </svg>
+                    </p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Exploring */}
         <section className="border-t border-border bg-card/30">
           <div className="mx-auto max-w-6xl px-5 py-24">
