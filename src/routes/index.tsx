@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent, type MouseEvent } from "react";
 import aiGraphic from "@/assets/ai-graphic.jpg";
 import profilePlaceholder from "@/assets/profile-placeholder.jpg";
 import quizCertificate from "@/assets/quiz-certificate.jpg.asset.json";
@@ -76,14 +76,26 @@ const achievements = [
   {
     title: "Online Quiz Certificate",
     description:
-      "I earned a certificate by participating in an online quiz. Click the link below to view it.",
+      "I earned a certificate by participating in Quiz Starts of QuestUp 2026: India's Biggest AI Quiz, organised by Falcon Sphere.",
     link: quizCertificate.url,
-    linkText: "Click here to view certificate",
+    linkText: "View certificate",
+    downloadName: "Satakshi-Dubey-Quiz-Certificate.jpg",
+    fileDetails: {
+      name: quizCertificate.original_filename,
+      size: `${(quizCertificate.size / 1024).toFixed(1)} KB`,
+      type: quizCertificate.content_type,
+      date: new Date(quizCertificate.created_at).toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }),
+    },
   },
   {
     title: "Adobe University Hackathon 2026",
     description:
       "I am a participant of Adobe University Hackathon 2026. My team name was Vertex.",
+    details: ["Event: Adobe University Hackathon 2026", "Team: Vertex", "Role: Participant"],
   },
 ];
 
@@ -112,8 +124,152 @@ function SectionHeading({ label, title }: { label: string; title: string }) {
   );
 }
 
+function CertificateModal({
+  isOpen,
+  onClose,
+  item,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  item: (typeof achievements)[number] | null;
+}) {
+  useEffect(() => {
+    if (!isOpen) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener("keydown", handleKey);
+    };
+  }, [isOpen, onClose]);
+
+  const handleBackdropClick = (e: MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) onClose();
+  };
+
+  const handleDownload = async () => {
+    if (!item?.link || !item.downloadName) return;
+    try {
+      const response = await fetch(item.link);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = item.downloadName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      window.open(item.link, "_blank", "noopener,noreferrer");
+    }
+  };
+
+  if (!isOpen || !item) return null;
+
+  const hasCertificate = !!item.link;
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+      onClick={handleBackdropClick}
+      role="dialog"
+      aria-modal="true"
+      aria-label={item.title}
+    >
+      <div className="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-border bg-background p-6 shadow-2xl sm:p-8">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 rounded-full border border-border p-2 text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+          aria-label="Close certificate details"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
+        </button>
+
+        <h3 className="font-display pr-10 text-xl font-semibold sm:text-2xl">{item.title}</h3>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
+
+        {hasCertificate && (
+          <div className="mt-6 overflow-hidden rounded-xl border border-border bg-card/50">
+            <img
+              src={item.link}
+              alt={`${item.title} preview`}
+              className="max-h-[55vh] w-full object-contain"
+            />
+          </div>
+        )}
+
+        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+          {item.fileDetails && (
+            <>
+              <div className="glass-card p-4">
+                <dt className="text-xs tracking-[0.16em] text-muted-foreground uppercase">File name</dt>
+                <dd className="mt-1 text-sm font-medium break-all">{item.fileDetails.name}</dd>
+              </div>
+              <div className="glass-card p-4">
+                <dt className="text-xs tracking-[0.16em] text-muted-foreground uppercase">Size</dt>
+                <dd className="mt-1 text-sm font-medium">{item.fileDetails.size}</dd>
+              </div>
+              <div className="glass-card p-4">
+                <dt className="text-xs tracking-[0.16em] text-muted-foreground uppercase">Type</dt>
+                <dd className="mt-1 text-sm font-medium">{item.fileDetails.type}</dd>
+              </div>
+              <div className="glass-card p-4">
+                <dt className="text-xs tracking-[0.16em] text-muted-foreground uppercase">Uploaded</dt>
+                <dd className="mt-1 text-sm font-medium">{item.fileDetails.date}</dd>
+              </div>
+            </>
+          )}
+          {item.details && (
+            <div className="glass-card p-4 sm:col-span-2">
+              <dt className="text-xs tracking-[0.16em] text-muted-foreground uppercase">Details</dt>
+              <dd className="mt-2 space-y-1">
+                {item.details.map((detail) => (
+                  <p key={detail} className="text-sm font-medium">
+                    {detail}
+                  </p>
+                ))}
+              </dd>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-8 flex flex-wrap gap-3">
+          {hasCertificate && (
+            <button
+              onClick={handleDownload}
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow)]"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" x2="12" y1="15" y2="3" />
+              </svg>
+              Download certificate
+            </button>
+          )}
+          <button
+            onClick={onClose}
+            className="rounded-full border border-border px-5 py-2.5 text-sm font-semibold transition-colors hover:border-primary hover:text-primary"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Portfolio() {
   const [sent, setSent] = useState(false);
+  const [selectedCertificate, setSelectedCertificate] = useState<(typeof achievements)[number] | null>(null);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -374,29 +530,52 @@ function Portfolio() {
             <SectionHeading label="Certificates" title="Certificates & Achievements" />
             <div className="grid gap-6 md:grid-cols-2">
               {achievements.map((item) => (
-                <article key={item.title} className="glass-card p-7">
+                <article
+                  key={item.title}
+                  className="glass-card cursor-pointer p-7 transition-all hover:border-primary/50"
+                  onClick={() => setSelectedCertificate(item)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") setSelectedCertificate(item);
+                  }}
+                  aria-label={`View details for ${item.title}`}
+                >
                   <h3 className="font-display text-xl font-semibold">{item.title}</h3>
                   <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
-                  {item.link && (
-                    <a
-                      href={item.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-5 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
-                    >
-                      {item.linkText}
+                  <div className="mt-5 flex flex-wrap items-center gap-3">
+                    <span className="inline-flex items-center gap-1 text-sm font-medium text-primary">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M15 3h6v6" />
-                        <path d="M10 14 21 3" />
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                        <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7Z" />
                       </svg>
-                    </a>
-                  )}
+                      View details
+                    </span>
+                    {item.link && (
+                      <span
+                        className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-primary"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                          <polyline points="7 10 12 15 17 10" />
+                          <line x1="12" x2="12" y1="15" y2="3" />
+                        </svg>
+                        Download available
+                      </span>
+                    )}
+                  </div>
                 </article>
               ))}
             </div>
           </div>
         </section>
+
+        <CertificateModal
+          isOpen={!!selectedCertificate}
+          onClose={() => setSelectedCertificate(null)}
+          item={selectedCertificate}
+        />
 
         {/* Exploring */}
         <section className="border-t border-border bg-card/30">
