@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import aiGraphic from "@/assets/ai-graphic.jpg";
 import profilePlaceholder from "@/assets/profile-placeholder.jpg";
+import quizCertificate from "@/assets/quiz-certificate.jpg.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
