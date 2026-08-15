@@ -77,7 +77,7 @@ const achievements = [
     title: "Online Quiz Certificate",
     description:
       "I earned a certificate by participating in an online quiz. Click the link below to view it.",
-    link: "/quiz-certificate.jpg",
+    link: quizCertificate.url,
     linkText: "Click here to view certificate",
   },
   {
