@@ -166,6 +166,10 @@ function SectionHeading({ label, title }: { label: string; title: string }) {
 
 function Portfolio() {
   const [sent, setSent] = useState(false);
+  const [activeCertificate, setActiveCertificate] = useState<{
+    src: string;
+    alt: string;
+  } | null>(null);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
