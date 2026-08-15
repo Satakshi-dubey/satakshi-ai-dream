@@ -274,15 +274,6 @@ function Portfolio() {
                           <span className="font-medium">{skill.name}</span>
                           <StatusBadge status={skill.status} />
                         </div>
-                        <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-secondary">
-                          <div
-                            className={
-                              skill.status === "Foundation"
-                                ? "h-full w-2/3 rounded-full bg-foreground/40"
-                                : "h-full w-1/3 rounded-full bg-primary"
-                            }
-                          />
-                        </div>
                       </li>
                     ))}
                   </ul>
