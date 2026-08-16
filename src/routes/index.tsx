@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect, type FormEvent, type MouseEvent } from "react";
 import aiGraphic from "@/assets/ai-graphic.jpg";
-import profilePlaceholder from "@/assets/profile-placeholder.jpg";
+import profilePhoto from "@/assets/satakshi-profile.jpg.asset.json";
+import resumeFile from "@/assets/resume.pdf.asset.json";
 import quizCertificate from "@/assets/quiz-certificate.jpg.asset.json";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -273,16 +275,42 @@ function Portfolio() {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    const name = String(data.get("name") ?? "").trim().slice(0, 100);
+    const email = String(data.get("email") ?? "").trim().slice(0, 255);
+    const message = String(data.get("message") ?? "").trim().slice(0, 2000);
+    if (!name || !email || !message) return;
+
+    const subject = `Portfolio message from ${name}`;
+    const body = `Name: ${name}\nEmail: ${email}\n\n${message}`;
+    window.location.href = `mailto:dubsatakshi5@gmail.com?subject=${encodeURIComponent(
+      subject,
+    )}&body=${encodeURIComponent(body)}`;
     setSent(true);
   };
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="fixed inset-x-0 top-0 z-50 border-b border-border/70 bg-background/80 backdrop-blur-xl">
         <nav className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 py-4 sm:flex sm:justify-between">
-          <a href="#home" className="font-display truncate text-sm font-semibold tracking-[0.2em] uppercase">
-            Satakshi <span className="text-primary">Dubey</span>
-          </a>
+          <div className="flex min-w-0 items-center gap-3">
+            <a href="#home" className="font-display truncate text-sm font-semibold tracking-[0.2em] uppercase">
+              Satakshi <span className="text-primary">Dubey</span>
+            </a>
+            <a
+              href="#skills"
+              title="View my skills"
+              aria-label="View my skills"
+              className="inline-flex size-8 shrink-0 items-center justify-center rounded-full border border-primary/40 text-primary transition-all hover:bg-primary hover:text-primary-foreground"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2 15.09 8.26 22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01L12 2z" />
+              </svg>
+            </a>
+          </div>
+
           <ul className="hidden items-center gap-7 text-sm text-muted-foreground lg:flex">
             {navItems.map(([label, href]) => (
               <li key={label}>
@@ -330,10 +358,12 @@ function Portfolio() {
               </p>
               <div className="mt-9 flex flex-wrap gap-3">
                 <a
-                  href="#skills"
+                  href={resumeFile.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow)]"
                 >
-                  View My Skills
+                  View My Resume
                 </a>
                 <a
                   href="#contact"
@@ -353,18 +383,14 @@ function Portfolio() {
                 />
                 <div className="relative size-64 overflow-hidden rounded-full border border-primary/40 sm:size-80">
                   <img
-                    src={profilePlaceholder}
-                    alt="Professional profile photo placeholder for Satakshi Dubey"
-                    width={1024}
-                    height={1024}
+                    src={profilePhoto.url}
+                    alt="Satakshi Dubey, B.Tech Information Technology student"
                     className="h-full w-full object-cover"
                   />
                 </div>
               </div>
-              <p className="mt-4 text-center text-xs text-muted-foreground">
-                Profile photo placeholder — easily replaced later
-              </p>
             </div>
+
           </div>
         </section>
 
@@ -613,13 +639,10 @@ function Portfolio() {
                     </dd>
                   </div>
                   <div className="glass-card p-5">
-                    <dt className="text-xs tracking-[0.16em] text-muted-foreground uppercase">Phone</dt>
-                    <dd className="mt-1">
-                      <a href="tel:8355033053" className="font-medium hover:text-primary">
-                        8355033053
-                      </a>
-                    </dd>
+                    <dt className="text-xs tracking-[0.16em] text-muted-foreground uppercase">Based in</dt>
+                    <dd className="mt-1 font-medium">Kanpur, India</dd>
                   </div>
+
                 </dl>
               </div>
 
@@ -667,9 +690,11 @@ function Portfolio() {
                 </button>
                 {sent && (
                   <p className="text-center text-sm text-primary">
-                    Thank you — your message has been noted. Please also reach out by email.
+                    Your email app has opened with the message ready — just press send and it will
+                    reach dubsatakshi5@gmail.com.
                   </p>
                 )}
+
               </form>
             </div>
           </div>
