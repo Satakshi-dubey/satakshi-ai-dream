@@ -664,9 +664,11 @@ function Portfolio() {
                 </button>
                 {sent && (
                   <p className="text-center text-sm text-primary">
-                    Thank you — your message has been noted. Please also reach out by email.
+                    Your email app has opened with the message ready — just press send and it will
+                    reach dubsatakshi5@gmail.com.
                   </p>
                 )}
+
               </form>
             </div>
           </div>
