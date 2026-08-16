@@ -21,6 +21,8 @@ export const Route = createFileRoute("/")({
         content:
           "Second-year B.Tech IT student passionate about Artificial Intelligence, AI tools, programming and creative technology.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Portfolio,
@@ -270,10 +272,10 @@ function CertificateModal({
 }
 
 function Portfolio() {
-  const [sent, setSent] = useState(false);
+  const [formStatus, setFormStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [selectedCertificate, setSelectedCertificate] = useState<(typeof achievements)[number] | null>(null);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
     const data = new FormData(form);
@@ -282,12 +284,28 @@ function Portfolio() {
     const message = String(data.get("message") ?? "").trim().slice(0, 2000);
     if (!name || !email || !message) return;
 
-    const subject = `Portfolio message from ${name}`;
-    const body = `Name: ${name}\nEmail: ${email}\n\n${message}`;
-    window.location.href = `mailto:dubsatakshi5@gmail.com?subject=${encodeURIComponent(
-      subject,
-    )}&body=${encodeURIComponent(body)}`;
-    setSent(true);
+    setFormStatus("sending");
+    try {
+      const payload = new FormData();
+      payload.append("name", name);
+      payload.append("email", email);
+      payload.append("message", message);
+      payload.append("_subject", `Portfolio message from ${name}`);
+      payload.append("_template", "table");
+      payload.append("_captcha", "false");
+
+      const response = await fetch("https://formsubmit.co/ajax/dubsatakshi5@gmail.com", {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: payload,
+      });
+      if (!response.ok) throw new Error("Message delivery failed");
+
+      form.reset();
+      setFormStatus("sent");
+    } catch {
+      setFormStatus("error");
+    }
   };
 
 
@@ -303,11 +321,12 @@ function Portfolio() {
               href="#skills"
               title="View my skills"
               aria-label="View my skills"
-              className="inline-flex size-8 shrink-0 items-center justify-center rounded-full border border-primary/40 text-primary transition-all hover:bg-primary hover:text-primary-foreground"
+              className="inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-full border border-primary/40 px-2.5 text-xs font-semibold text-primary transition-all hover:bg-primary hover:text-primary-foreground"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 2 15.09 8.26 22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01L12 2z" />
               </svg>
+              <span>Skills</span>
             </a>
           </div>
 
@@ -361,6 +380,7 @@ function Portfolio() {
                   href={resumeFile.url}
                   target="_blank"
                   rel="noopener noreferrer"
+                  type="application/pdf"
                   className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow)]"
                 >
                   View My Resume
@@ -684,14 +704,19 @@ function Portfolio() {
                 </div>
                 <button
                   type="submit"
-                  className="w-full rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-all hover:shadow-[var(--shadow-glow)]"
+                  disabled={formStatus === "sending"}
+                  className="w-full rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-all hover:shadow-[var(--shadow-glow)] disabled:cursor-wait disabled:opacity-60"
                 >
-                  Send Message
+                  {formStatus === "sending" ? "Sending…" : "Send Message"}
                 </button>
-                {sent && (
-                  <p className="text-center text-sm text-primary">
-                    Your email app has opened with the message ready — just press send and it will
-                    reach dubsatakshi5@gmail.com.
+                {formStatus === "sent" && (
+                  <p role="status" className="text-center text-sm text-primary">
+                    Message sent successfully. Thank you for getting in touch.
+                  </p>
+                )}
+                {formStatus === "error" && (
+                  <p role="alert" className="text-center text-sm text-destructive">
+                    The message could not be sent. Please email me directly at dubsatakshi5@gmail.com.
                   </p>
                 )}
 
