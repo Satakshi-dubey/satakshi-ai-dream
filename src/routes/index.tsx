@@ -613,13 +613,10 @@ function Portfolio() {
                     </dd>
                   </div>
                   <div className="glass-card p-5">
-                    <dt className="text-xs tracking-[0.16em] text-muted-foreground uppercase">Phone</dt>
-                    <dd className="mt-1">
-                      <a href="tel:8355033053" className="font-medium hover:text-primary">
-                        8355033053
-                      </a>
-                    </dd>
+                    <dt className="text-xs tracking-[0.16em] text-muted-foreground uppercase">Based in</dt>
+                    <dd className="mt-1 font-medium">Kanpur, India</dd>
                   </div>
+
                 </dl>
               </div>
 
