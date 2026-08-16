@@ -330,10 +330,12 @@ function Portfolio() {
               </p>
               <div className="mt-9 flex flex-wrap gap-3">
                 <a
-                  href="#skills"
+                  href={resumeFile.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow)]"
                 >
-                  View My Skills
+                  View My Resume
                 </a>
                 <a
                   href="#contact"
@@ -353,18 +355,14 @@ function Portfolio() {
                 />
                 <div className="relative size-64 overflow-hidden rounded-full border border-primary/40 sm:size-80">
                   <img
-                    src={profilePlaceholder}
-                    alt="Professional profile photo placeholder for Satakshi Dubey"
-                    width={1024}
-                    height={1024}
+                    src={profilePhoto.url}
+                    alt="Satakshi Dubey, B.Tech Information Technology student"
                     className="h-full w-full object-cover"
                   />
                 </div>
               </div>
-              <p className="mt-4 text-center text-xs text-muted-foreground">
-                Profile photo placeholder — easily replaced later
-              </p>
             </div>
+
           </div>
         </section>
 
