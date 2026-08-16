@@ -275,8 +275,21 @@ function Portfolio() {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    const name = String(data.get("name") ?? "").trim().slice(0, 100);
+    const email = String(data.get("email") ?? "").trim().slice(0, 255);
+    const message = String(data.get("message") ?? "").trim().slice(0, 2000);
+    if (!name || !email || !message) return;
+
+    const subject = `Portfolio message from ${name}`;
+    const body = `Name: ${name}\nEmail: ${email}\n\n${message}`;
+    window.location.href = `mailto:dubsatakshi5@gmail.com?subject=${encodeURIComponent(
+      subject,
+    )}&body=${encodeURIComponent(body)}`;
     setSent(true);
   };
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">
