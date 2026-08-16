@@ -280,9 +280,22 @@ function Portfolio() {
     <div className="min-h-screen bg-background text-foreground">
       <header className="fixed inset-x-0 top-0 z-50 border-b border-border/70 bg-background/80 backdrop-blur-xl">
         <nav className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 py-4 sm:flex sm:justify-between">
-          <a href="#home" className="font-display truncate text-sm font-semibold tracking-[0.2em] uppercase">
-            Satakshi <span className="text-primary">Dubey</span>
-          </a>
+          <div className="flex min-w-0 items-center gap-3">
+            <a href="#home" className="font-display truncate text-sm font-semibold tracking-[0.2em] uppercase">
+              Satakshi <span className="text-primary">Dubey</span>
+            </a>
+            <a
+              href="#skills"
+              title="View my skills"
+              aria-label="View my skills"
+              className="inline-flex size-8 shrink-0 items-center justify-center rounded-full border border-primary/40 text-primary transition-all hover:bg-primary hover:text-primary-foreground"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2 15.09 8.26 22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01L12 2z" />
+              </svg>
+            </a>
+          </div>
+
           <ul className="hidden items-center gap-7 text-sm text-muted-foreground lg:flex">
             {navItems.map(([label, href]) => (
               <li key={label}>
