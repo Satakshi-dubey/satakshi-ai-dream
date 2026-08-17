@@ -677,7 +677,7 @@ function Portfolio() {
                         LinkedIn
                       </a>
                       <a
-                        href="https://github.com/yourusername"
+href="https://github.com/Satakshi-dubey"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-4 py-2 text-sm font-medium transition-colors hover:border-primary hover:text-primary"
