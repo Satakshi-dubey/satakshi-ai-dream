@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect, type FormEvent, type MouseEvent } from "react";
 import aiGraphic from "@/assets/ai-graphic.jpg";
-import profilePhoto from "@/assets/satakshi-profile.jpg.asset.json";
+import profilePhoto from "@/assets/ai-graphic.jpg";
 import resumeFile from "@/assets/resume.pdf.asset.json";
 import quizCertificate from "@/assets/quiz-certificate.jpg.asset.json";
 
@@ -403,7 +403,7 @@ function Portfolio() {
                 />
                 <div className="relative size-64 overflow-hidden rounded-full border border-primary/40 sm:size-80">
                   <img
-                    src={profilePhoto.url}
+                    src={profilePhoto}
                     alt="Satakshi Dubey, B.Tech Information Technology student"
                     className="h-full w-full object-cover"
                   />
